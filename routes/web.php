@@ -17,13 +17,21 @@ Route::get('/', 'BankController@welcome');
 
 Route::post('/', 'BankController@checkLogin');
 
-Route::get('/register', 'BankController@register');
+Route::get('/register', 'RegistrationController@create');
+
+Route::post('/register', 'RegistrationController@store');
 
 Route::get('/home/{id}', 'BankController@home');
 
 Route::get('/bills/{id}', 'BankController@bills');
 
+Route::get('bills/pay/{bill_id}', 'BankController@bills_pay');
+
+Route::post('bills/add/{user_id}', 'BankController@bill_add');
+
 Route::get('/accounts/{id}', 'BankController@accounts');
+
+Route::post('/deposit/{id}', 'BankController@deposit');
 
 Route::get('/references/{id}', 'BankController@references');
 

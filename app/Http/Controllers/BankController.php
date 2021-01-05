@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Validator;
 use Illuminate\Support\Facades\Auth;
-use App\User;
+use App\Account;
+use App\Bill;
+use App\Dlog;
+use Carbon\Carbon;
+use App\Tlog;
 
 class BankController extends Controller
 {
@@ -33,35 +36,83 @@ class BankController extends Controller
         }
     }
 
-    private function successLogin(){
-        return view('home');
-    }
-
-    public function login(){
-
-        return "login";
-    }
-
-    public function register(){
-        return view('register');
-    }
-
     public function home($id){
-       // $user = User::findOrFail($id)->name;
-
       return view('home')->with('id', $id);
     }
 
     public function bills($id){
-        return view('bills')->with('id', $id);
+        $bills = Bill::where('user_id', $id)->get();
+        //                                  ->get('amount')[1]->amount;
+        return view('bills')->with('bills', $bills)->with('id', $id);
     }
 
+    public function bills_pay($bill_id){
+
+        $amount = Bill::where('id', $bill_id)->get('amount')[0]->amount;
+
+        $id = Bill::where('id', $bill_id)->get('user_id')[0]->user_id;
+
+        if(Account::where('id',$id)->get('amount')[0]->amount - $amount < 0){
+            return back()->with('error', 'Not Enough Money In Account');
+        }
+
+        Account::where('id', $id)->decrement('amount', $amount);
+
+        Bill::where('id', $bill_id)->update(array('status' => 'Paid'));
+
+        $bills = Bill::where('user_id', $id)->get();
+
+        Tlog::create([
+            'uid' => $id,
+            'type' => 'OUT',
+            'amount' => $amount,
+            'date' => Carbon::now(),
+            'bene' => Bill::where('id', $bill_id)->get('name')[0]->name
+        ]);
+
+        return view('bills')->with('bills', $bills)->with('id', $id);
+    }
+
+
+    public function bill_add($user_id, Request $request){
+        
+            Bill::create([
+                'user_id' => $user_id,
+                'name' => $request['billName'],
+                'type' => $request['billType'],
+                'status' => 'Awaits Payment',
+                'amount' => $request['billAmount']
+               ]);
+               $bills = Bill::where('user_id', $user_id)->get();
+               return view('bills')->with('bills', $bills)->with('id', $user_id);
+
+    }
+
+    
     public function accounts($id){
         return view('accounts')->with('id', $id);
     }
 
+    public function deposit($id, Request $request){
+        Account::where('id', $id)->increment('amount', $request['amount']);
+
+        Dlog::create([
+            'uid' => $id,
+            'currency' => 'BGN',
+            'amount' => $request['amount'],
+            'date' => Carbon::now()
+        ]);
+
+        return view('accounts')->with('id', $id);
+    }
+
+
     public function references($id){
-        return view('references')->with('id', $id);
+
+        $deposits = Dlog::where('uid', $id)->get();
+        $transactions = Tlog::where('uid', $id)->get();
+
+        return view('references')->with('id', $id)->with('deposits', $deposits)->with('transactions', $transactions);
     }
 
     public function contacts($id){

@@ -18,7 +18,27 @@ class UsersTablesSeeder extends Seeder
             'name' => 'Nutfi Ayhan',
             'email' => 'nutfi911@outlook.com',
             'password' => Hash::make('911'),
-            'remember_token' => Str::random(10)
+            'remember_token' => Str::random(10),
+            'address' => 'Varna, 9800, Bulgaria',
+            'phone' => '0888530123',
+        ]);
+
+        User::create([
+            'name' => 'Nutfi Ayhan 2',
+            'email' => 'nutfi911@icloud.com',
+            'password' => Hash::make('911'),
+            'remember_token' => Str::random(10),
+            'address' => 'Shumen, 9700, Bulgaria',
+            'phone' => '0888530123',
+        ]);
+
+        User::create([
+            'name' => 'Jordan Dimitrov',
+            'email' => 'jdbull@icloud.com',
+            'password' => Hash::make('911'),
+            'remember_token' => Str::random(10),
+            'address' => 'Tutrakan, 7600, Bulgaria',
+            'phone' => '0888530123',
         ]);
     }
 }

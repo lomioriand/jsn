@@ -14,7 +14,7 @@
 
         <link rel="icon" href="https://scontent.fsof3-1.fna.fbcdn.net/v/t1.15752-9/128175183_806778433234412_790589090988554979_n.png?_nc_cat=105&ccb=2&_nc_sid=ae9488&_nc_ohc=MelnoqPbadQAX-V1hBB&_nc_ht=scontent.fsof3-1.fna&oh=ba474a1636aae48d6a33b9b811728ace&oe=5FE82B17">
         <title>
-          JSN | User ID: {{ $id }}
+        JSN | User ID: {{ $id }}
         </title>
         
     </head>
@@ -51,7 +51,7 @@
                 </li>
                 <li class="nav-item">
                   <a href="/accounts/{{ $id }}" class="nav-link text-dark font-italic @if(str_contains(url()->current(), 'accounts/')) bg-light @endif ">
-                            Accounts
+                            Account
                         </a>
                 </li>
               </ul>
